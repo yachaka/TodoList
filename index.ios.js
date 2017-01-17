@@ -9,33 +9,71 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
+  ListView,
   View
 } from 'react-native';
 
+const defaultDataSource = new ListView.DataSource({
+  rowHasChanged: (r1, r2) => r1 !== r2,
+});
+
 export default class TodoList extends Component {
   render() {
+    const dataSource = defaultDataSource.cloneWithRows([
+      'Passer la piscine',
+      'Apprendre React-Native',
+      'Dominer le monde'
+    ]);
+
+    const listViewStyle = {
+      borderTopWidth: 1,
+      borderTopColor: '#ddd',
+    };
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
-        </Text>
+        <ListView
+          contentContainerStyle={listViewStyle}
+          dataSource={dataSource}
+          renderRow={this.renderRow}
+          renderSeparator={this.renderSeparator}
+        />
       </View>
     );
+  }
+
+  renderRow(todo, sectionID, rowID) {
+    const style = {
+      padding: 14,
+      backgroundColor: 'white'
+    };
+
+    const textStyle = {
+      fontSize: 20,
+    };
+
+    return (
+      <View key={rowID} style={style}>
+        <Text style={textStyle}>{todo}</Text>
+      </View>
+    );
+  }
+
+  renderSeparator(sectionID, rowID) {
+    const style = {
+      borderBottomWidth: 1,
+      borderBottomColor: '#ddd',
+    };
+
+    return (<View key={rowID} style={style} />);
   }
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 20,
     justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
   welcome: {
