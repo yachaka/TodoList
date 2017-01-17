@@ -11,7 +11,9 @@ import {
   Text,
   ListView,
   TouchableHighlight,
-  View
+  View,
+  TextInput,
+  Button,
 } from 'react-native';
 
 const defaultDataSource = new ListView.DataSource({
@@ -23,6 +25,7 @@ export default class TodoList extends Component {
     super(props);
 
     this.state = {
+      inputText: '',
       todos: [{
         text: 'Passer la piscine',
         checked: true,
@@ -34,6 +37,19 @@ export default class TodoList extends Component {
         checked: false,
       }],
     };
+  }
+
+  addTodo = () => {
+    const newTodos = this.state.todos.slice();
+    newTodos.push({
+      text: this.state.inputText,
+      checked: false,
+    });
+
+    this.setState({
+      inputText: '',
+      todos: newTodos,
+    });
   }
 
   toggleTodo = (index) => {
@@ -48,6 +64,24 @@ export default class TodoList extends Component {
   render() {
     const dataSource = defaultDataSource.cloneWithRows(this.state.todos);
 
+    const wrapperStyle = {
+      flexDirection: 'row',
+      padding: 14,
+    };
+
+    const inputStyle = {
+      flex: 1,
+      borderWidth: 1,
+      borderColor: '#ddd',
+      borderRadius: 4,
+      fontSize: 18,
+      height: 44,
+      lineHeight: 22,
+      marginRight: 14,
+      backgroundColor: 'white',
+      padding: 10,
+    };
+
     const listViewStyle = {
       borderTopWidth: 1,
       borderTopColor: '#ddd',
@@ -55,6 +89,15 @@ export default class TodoList extends Component {
 
     return (
       <View style={styles.container}>
+        <View style={wrapperStyle}>
+          <TextInput
+            style={inputStyle}
+            onChangeText={(text) => this.setState({ inputText: text })}
+            value={this.state.inputText}
+          />
+          <Button title="Ajouter" onPress={this.addTodo} />
+        </View>
+
         <ListView
           contentContainerStyle={listViewStyle}
           dataSource={dataSource}
