@@ -10,6 +10,7 @@ import {
   StyleSheet,
   Text,
   ListView,
+  TouchableHighlight,
   View
 } from 'react-native';
 
@@ -18,12 +19,34 @@ const defaultDataSource = new ListView.DataSource({
 });
 
 export default class TodoList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      todos: [{
+        text: 'Passer la piscine',
+        checked: true,
+      }, {
+        text: 'Apprendre React-Native',
+        checked: false,
+      }, {
+        text: 'Dominer le monde',
+        checked: false,
+      }],
+    };
+  }
+
+  toggleTodo = (index) => {
+    const newTodos = this.state.todos.slice();
+    newTodos[index].checked = !newTodos[index].checked;
+
+    this.setState({
+      todos: newTodos,
+    });
+  }
+
   render() {
-    const dataSource = defaultDataSource.cloneWithRows([
-      'Passer la piscine',
-      'Apprendre React-Native',
-      'Dominer le monde'
-    ]);
+    const dataSource = defaultDataSource.cloneWithRows(this.state.todos);
 
     const listViewStyle = {
       borderTopWidth: 1,
@@ -42,10 +65,22 @@ export default class TodoList extends Component {
     );
   }
 
-  renderRow(todo, sectionID, rowID) {
+  renderRow = (todo, sectionID, rowID) => {
     const style = {
       padding: 14,
-      backgroundColor: 'white'
+      backgroundColor: 'white',
+      flexDirection: 'row',
+      alignItems: 'center',
+    };
+
+    const checkmarkStyle = {
+      fontSize: 22,
+      marginRight: 8,
+      color: '#ddd',
+    };
+
+    const checkmarkCheckedStyle = {
+      color: 'blue',
     };
 
     const textStyle = {
@@ -53,9 +88,14 @@ export default class TodoList extends Component {
     };
 
     return (
-      <View key={rowID} style={style}>
-        <Text style={textStyle}>{todo}</Text>
-      </View>
+      <TouchableHighlight onPress={() => this.toggleTodo(rowID)}>
+        <View key={rowID} style={style}>
+          <Text style={[checkmarkStyle, todo.checked && checkmarkCheckedStyle]}>
+            ✓
+          </Text>
+          <Text style={textStyle}>{todo.text}</Text>
+        </View>
+      </TouchableHighlight>
     );
   }
 
