@@ -6,10 +6,12 @@
 
 import React, { Component } from 'react';
 import {
+  Alert,
   AppRegistry,
   StyleSheet,
   Text,
   ListView,
+  TouchableOpacity,
   TouchableHighlight,
   View,
   TextInput,
@@ -48,6 +50,26 @@ export default class TodoList extends Component {
 
     this.setState({
       inputText: '',
+      todos: newTodos,
+    });
+  }
+
+  deleteTodoConfirm = (index) => {
+    Alert.alert(
+      `Supprimer la todo "${this.state.todos[index].text}" ?`,
+      null,
+      [
+        { text: 'Oui !', onPress: () => this.deleteTodo(index), style: 'destructive' },
+        { text: 'J\'ai changé d\'avis', style: 'cancel' },
+      ]
+    );
+  }
+
+  deleteTodo = (index) => {
+    const newTodos = this.state.todos.slice();
+    newTodos.splice(index, 1);
+
+    this.setState({
       todos: newTodos,
     });
   }
@@ -127,7 +149,18 @@ export default class TodoList extends Component {
     };
 
     const textStyle = {
+      flex: 1,
       fontSize: 20,
+    };
+
+    const deleteStyle = {
+      padding: 6,
+      borderRadius: 4,
+    };
+
+    const deleteTextStyle = {
+      fontSize: 12,
+      color: 'red',
     };
 
     return (
@@ -137,6 +170,10 @@ export default class TodoList extends Component {
             ✓
           </Text>
           <Text style={textStyle}>{todo.text}</Text>
+
+          <TouchableOpacity onPress={() => this.deleteTodoConfirm(rowID)} style={deleteStyle}>
+            <Text style={deleteTextStyle}>SUPPRIMER</Text>
+          </TouchableOpacity>
         </View>
       </TouchableHighlight>
     );
